@@ -1,4 +1,4 @@
-# login
+# vue-FGDES-ui
 
 ## Project setup
 ```
@@ -22,5 +22,6 @@ npm run lint
 
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
-"# vue-login-practice" 
-# vue-login-practice
+
+### Requirement
+Local api-server and mysql-database are required, which are in the express-api-server.
