@@ -37,17 +37,17 @@
                            label="active">
           </el-table-column>
           </el-table-column>
-          <el-table-column prop="totalCurrent"
-                           label="total current /A">
+          <el-table-column prop="totalCur1"
+                           label="total cur1 /A">
+          </el-table-column>
+          <el-table-column prop="totalCur2"
+                           label="total cur2 /A">
+          </el-table-column>
+          <el-table-column prop="totalCur3"
+                           label="total cur3 /A">
           </el-table-column>
           <el-table-column prop="maxCurrentValue"
                            label="max current /A">
-          </el-table-column>
-          <el-table-column prop="safeCurrentValue"
-                           label="safe current /A">
-          </el-table-column>
-          <el-table-column prop="averageMax"
-                           label="average Max /A">
           </el-table-column>
         </el-table>
       </template>
@@ -71,7 +71,7 @@ export default {
   },
   created () {
     this.getMeshInfo()
-    // this.keepAlive()
+    this.keepAlive()
   },
   methods: {
     // get the setting of mesh
@@ -88,20 +88,23 @@ export default {
       }
       this.totalNum = res2.data.length
       this.HomeData[0].activeNum = 0
-      this.HomeData[0].totalCurrent = 0
+      this.HomeData[0].totalCur1 = 0
+      this.HomeData[0].totalCur2 = 0
+      this.HomeData[0].totalCur3 = 0
       for (var i = 0; i < res2.data.length; i++) {
-        if (res2.data[i].workStatus) {
+        if (res2.data[i].connect && res2.data[i].workStatus) {
           this.HomeData[0].activeNum++
-          this.HomeData[0].totalCurrent += res2.data[i].CurrentValue
+          this.HomeData[0].totalCur1 += res2.data[i].Cur1
+          this.HomeData[0].totalCur2 += res2.data[i].Cur2
+          this.HomeData[0].totalCur3 += res2.data[i].Cur3
         }
       }
       this.HomeData[0].totalNum = this.totalNum
-      this.HomeData[0].averageMax = Math.floor(this.HomeData[0].maxCurrentValue / this.HomeData[0].activeNum * 10) / 10
     },
     keepAlive () {
       setInterval(() => {
         this.getMeshInfo()
-      }, 3000)
+      }, 1000)
     }
   }
 }

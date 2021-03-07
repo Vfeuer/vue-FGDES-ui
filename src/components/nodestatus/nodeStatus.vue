@@ -12,7 +12,6 @@
         <el-row>
           <el-col :span="10">Center of node status</el-col>
           <el-col :span="6" :offset="8">
-            <!-- <el-button type="primary" plain @click="getNodeStatusList">refresh</el-button> -->
           </el-col>
         </el-row>
       </div>
@@ -26,43 +25,45 @@
           <el-table-column type="index"
                            label="#">
           </el-table-column>
-          <el-table-column prop="nodeName"
-                           label="name">
-          </el-table-column>
-          <el-table-column prop="CurrentValue"
-                           sortable
-                           label="current value/A">
-          </el-table-column>
-          <el-table-column prop="maxCurrent"
-                           sortable
-                           label="max current /A">
-          </el-table-column>
-          <el-table-column prop="workmode"
-                           sortable
-                           label="workmode">
-          </el-table-column>
-          <el-table-column label="status">
+          <el-table-column label="name">
             <template slot-scope="scope">
-              <el-switch v-model="scope.row.workStatus"
-                         @change="changeNodeStatus(scope.row)"
-                         :active-value= "1"
-                         :inactive-value= "0"
-                         inactive-color= "#E6A23C">
-              </el-switch>
+              <div>
+                <el-link><i class="el-icon-edit" @click="showNameDialog(scope.row.id)"></i></el-link>
+                {{ scope.row.nodeName }}
+              </div>
             </template>
           </el-table-column>
-          <el-table-column label="edit">
+          <el-table-column prop="connect"
+                           label="connection"
+                           width="100">
+          </el-table-column>
+          <el-table-column prop="workStatus"
+                           label="status"
+                           width="100">
+          </el-table-column>
+          <el-table-column prop="Cur1"
+                           sortable
+                           label="cur1 /A">
+          </el-table-column>
+          <el-table-column prop="Cur2"
+                           sortable
+                           label="cur2 /A">
+          </el-table-column>
+          <el-table-column prop="Cur3"
+                           sortable
+                           label="cur3 /A">
+          </el-table-column>
+          <el-table-column prop="maxCur"
+                           sortable
+                           label="max current /A"
+                           width="160">
+          </el-table-column>
+          <!-- <el-table-column prop="workmode"
+                           sortable
+                           label="workmode">
+          </el-table-column> -->
+          <el-table-column label="setting" width="100">
             <template slot-scope="scope">
-
-              <!-- edit node name-->
-              <el-tooltip effect="dark" content="rename" placement="top">
-                <el-button type="primary"
-                           icon="el-icon-edit"
-                           size="mini"
-                           circle
-                           @click="showNameDialog(scope.row.id)">
-                </el-button>
-              </el-tooltip>
 
               <!-- settings of node-->
               <el-tooltip effect="dark" content="setting" placement="top">
@@ -71,6 +72,16 @@
                            size="mini"
                            circle
                            @click="showSettingDialog(scope.row.id)">
+                </el-button>
+              </el-tooltip>
+
+              <!-- press button B, only for test -->
+              <el-tooltip effect="dark" content="button B" placement="top">
+                <el-button type="primary"
+                           icon="el-icon-video-play"
+                           size="mini"
+                           circle
+                           @click="pressButtonB(scope.row.macADR)">
                 </el-button>
               </el-tooltip>
             </template>
@@ -95,12 +106,12 @@
                width="350px"
                class="NameDialog"
                @close="nameDialogClosed">
-      <el-form :model="nameForm" :rules="nameFormRules" ref="nameFormRef" label-width="150px">
-        <el-form-item label="node name" prop="nodeName">
-          <el-input v-model="nameForm.nodeName" disabled></el-input>
+      <el-form :model="nameForm" ref="nameFormRef" label-width="150px">
+        <el-form-item label="Mac address" prop="macADR">
+          <el-input v-model="nameForm.macADR" disabled></el-input>
         </el-form-item>
-        <el-form-item label="new node name" prop="newName">
-          <el-input v-model="nameForm.newName"></el-input>
+        <el-form-item label="Node name" prop="nodeName">
+          <el-input v-model="nameForm.nodeName" clearable maxlength="15"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -110,23 +121,27 @@
     </el-dialog>
 
     <!-- Messagebox for changing the settings of nodes-->
-    <el-dialog title="settings of nodes"
+    <el-dialog title="Settings of node"
                :visible.sync="settingDialogVisible"
                width="300px"
                class="settingDialog"
                @close="settingDialogClosed">
       <el-form :model="settingForm" :rules="settingFormRules" ref="settingFormRef" label-width="100px" class="settingform">
-        <el-form-item label="max current" prop="maxCurrent">
-          <el-input v-model.number="settingForm.maxCurrent">
+        <el-form-item label="workmode">
+          <el-radio-group v-model="settingForm.workmode" size="small" @change="checkMode(settingForm.workmode)">
+            <el-radio :label="'auto'">auto</el-radio>
+            <el-radio :label="'manual'">manual</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item label="max current" prop="maxCur">
+          <el-input v-model="settingForm.maxCur" clearable maxlength="5" :disabled="isAuto">
             <template slot="append"><div style="width:0px">A</div></template>
           </el-input>
         </el-form-item>
-        <el-form-item label="workmode">
-            <el-radio-group v-model="settingForm.workmode" size="small">
-              <el-radio :label="'normal'">normal</el-radio>
-              <el-radio :label="'fast'">fast</el-radio>
-            </el-radio-group>
-          </el-form-item>
+        <el-form-item label="phases" prop="Phases">
+          <el-input v-model.number="settingForm.Phases" clearable maxlength="5" :disabled="isAuto">
+          </el-input>
+        </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="settingDialogVisible = false">cancel</el-button>
@@ -140,20 +155,17 @@
 export default {
   data () {
     var checkCurrentValue = (rule, value, callback) => {
-      if (!value) {
-        return callback(new Error('The value of max current cannot be empty'))
-      }
-      setTimeout(() => {
-        if (!Number.isInteger(value)) {
+      var isNum = /^\d+(\.\d+)?$/
+      if (value) {
+        if (!isNum.test(value)) {
           callback(new Error('please enter only numbers'))
         } else {
-          if (value > this.safeCurrent) {
-            callback(new Error('max current should be less than the safe current ' + this.safeCurrent + ' A'))
-          } else {
-            callback()
+          if (value > this.settingForm.cmaxCur) {
+            callback(new Error('max current should be less than the safe current ' + this.settingForm.cmaxCur + ' A'))
           }
         }
-      }, 150)
+      }
+      callback()
     }
     return {
       queryInfo: {
@@ -163,27 +175,18 @@ export default {
         // number of nodes in the table
         pagesize: 10
       },
-      safeCurrent: 32,
       NodeStatusList: [],
       total: 0,
       nodeInfo: {},
       NameDialogVisible: false, // if the messagebox of changing name is visible
       nameForm: {},
-      nameFormRules: {
-        newName: [
-          { required: true, message: 'please enter the new name of Node', trigger: 'blur' },
-          {
-            max: 20,
-            message: 'Length of the node name should be less than 20 letters',
-            trigger: 'blur'
-          }]
-      },
-      settingDialogVisible: false, // if the messagebox of edit settings of node is visible
+      settingDialogVisible: false, // if the messagebox of edit setting of node is visible
       settingForm: {},
       settingFormRules: {
-        maxCurrent: [
+        maxCur: [
           { validator: checkCurrentValue, trigger: 'blur' }]
-      }
+      },
+      isAuto: true // true: default workmode automatic. false: manual -> change setting allowed
     }
   },
   created () {
@@ -199,7 +202,11 @@ export default {
       }
       this.NodeStatusList = res.data
       this.total = res.data.length
-      this.getMeshSetting()
+      for (let i = 0; i < this.NodeStatusList.length; i++) {
+        if (!this.NodeStatusList[i].nodeName) {
+          this.NodeStatusList[i].nodeName = this.NodeStatusList[i].macADR
+        }
+      }
     },
 
     // change the size of pages
@@ -218,21 +225,20 @@ export default {
       const { data: res } = await this.$http.put('nodes/status',
         {
           id: nodeInfo.id,
-          maxCurrent: nodeInfo.maxCurrent,
+          maxCur: nodeInfo.maxCur,
           workmode: nodeInfo.workmode,
           workStatus: nodeInfo.workStatus
         })
       if (res.meta.status !== 202) {
         nodeInfo.workStatus = !nodeInfo.workStatus
-        return this.$message.error('failes in changing the status of node')
+        return this.$message.error('Failed in changing the status of node')
       }
-      this.$message.success('success in changing the status of node')
+      this.$message.success('Success in changing the status of node')
     },
 
     // show the dialog for changing the name of node
     async showNameDialog (id) {
       const { data: res } = await this.$http.get('nodes/list?id=' + id)
-      console.log(res)
       if (res.meta.status !== 200) {
         return this.$message.error('Failed to read the information of node')
       }
@@ -246,18 +252,16 @@ export default {
     },
 
     // edit the name of node then upload
-    NameDialogConfirm () {
-      this.$refs.nameFormRef.validate(async valid => {
-        if (!valid) return
-        const { data: res } = await this.$http.put('nodes/list',
-          { id: this.nameForm.id, newName: this.nameForm.newName })
-        if (res.meta.status !== 202) {
-          this.$message.error('fail to change the name of node！')
-        }
+    async NameDialogConfirm () {
+      const { data: res } = await this.$http.put('nodes/list',
+        { id: this.nameForm.id, nodeName: this.nameForm.nodeName })
+      if (res.meta.status !== 202) {
         this.NameDialogVisible = false
-        this.$message.success('The name of the node has been successfully modified！')
-        this.getNodeStatusList()
-      })
+        return this.$message.error('Failed to change the name of node！')
+      }
+      this.NameDialogVisible = false
+      this.getNodeStatusList()
+      return this.$message.success('The name of the node has been successfully modified！')
     },
 
     // show the dialog for editing the settings of node
@@ -266,7 +270,11 @@ export default {
       if (res.meta.status !== 200) {
         return this.$message.error('Failed to read the information of node')
       }
+      if (!res.data.connect) {
+        return this.$message.error('No connection to the node')
+      }
       this.settingForm = res.data
+      this.checkMode(this.settingForm.workmode)
       this.settingDialogVisible = true
     },
 
@@ -274,35 +282,44 @@ export default {
     settingDialogClosed () {
       this.$refs.settingFormRef.resetFields()
     },
-    settingDialogConfirm () { // edit the settings of node then upload
+    settingDialogConfirm () { // edit the setting of node and upload
       this.$refs.settingFormRef.validate(async valid => {
         if (!valid) return
         const { data: res } = await this.$http.put('nodes/status',
           {
             id: this.settingForm.id,
-            maxCurrent: this.settingForm.maxCurrent,
+            macADR: this.settingForm.macADR,
+            Phases: this.settingForm.Phases,
+            maxCur: this.settingForm.maxCur,
             workmode: this.settingForm.workmode,
             workStatus: this.settingForm.workStatus
           })
         if (res.meta.status !== 202) {
-          this.$message.error('fail to change the settings of node！')
+          this.settingDialogVisible = false
+          return this.$message.error('Failed to change the setting of node！')
         }
         this.settingDialogVisible = false
-        this.$message.success('The settings of the node has been successfully modified！')
         this.getNodeStatusList()
+        return this.$message.success('The setting of the node has been successfully modified！')
       })
     },
     keepAlive () {
       setInterval(() => {
         this.getNodeStatusList()
-      }, 3000)
+      }, 1000)
     },
-    async getMeshSetting () {
-      const { data: res } = await this.$http.get('mesh/setting')
-      if (res.meta.status !== 200) {
-        return this.$message.error('Failed to read the setting of mesh')
+    async pressButtonB (macADR) {
+      const { data: res } = await this.$http.put('nodes/buttonB', { macADR: macADR })
+      if (res.meta.status === 200) {
+        return this.$message.success('The setting of the node has been successfully modified！')
       }
-      this.safeCurrent = res.data.safeMax
+    },
+    checkMode (workmode) {
+      if (workmode === 'manual') {
+        this.isAuto = false
+      } else {
+        this.isAuto = true
+      }
     }
   }
 }

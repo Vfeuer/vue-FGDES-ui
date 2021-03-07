@@ -27,7 +27,8 @@ import {
   Pagination,
   Dialog,
   Radio,
-  RadioGroup
+  RadioGroup,
+  Link
 } from 'element-ui'
 import lang from 'element-ui/lib/locale/lang/en'
 import locale from 'element-ui/lib/locale'
@@ -60,4 +61,5 @@ Vue.use(Pagination)
 Vue.use(Dialog)
 Vue.use(Radio)
 Vue.use(RadioGroup)
+Vue.use(Link)
 Vue.prototype.$message = Message

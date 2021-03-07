@@ -81,13 +81,8 @@
                    @close="meshDialogClosed">
           <el-form :model="meshForm" :rules="meshFormRules" ref="meshFormRef" label-width="120px" class="meshDialogForm">
             <el-form-item label="max Current" prop="wholeMax">
-              <el-input v-model.number="meshForm.wholeMax">
+              <el-input v-model="meshForm.wholeMax">
                 <template slot="append"><div style="width:0px">A</div></template>
-              </el-input>
-            </el-form-item>
-            <el-form-item label="safe Current" prop="safeMax">
-              <el-input v-model.number="meshForm.safeMax">
-                  <template slot="append"><div style="width:0px">A</div></template>
               </el-input>
             </el-form-item>
           </el-form>
@@ -112,11 +107,12 @@
 export default {
   data () {
     var checkCurrentValue = (rule, value, callback) => {
+      var isNum = /^\d+(\.\d+)?$/
       if (!value) {
-        return callback(new Error('The value cannot be empty'))
+        return callback(new Error('Max Current cannot be empty'))
       }
       setTimeout(() => {
-        if (!Number.isInteger(value)) {
+        if (!isNum.test(value)) {
           callback(new Error('Please enter only numbers'))
         } else {
           callback()
@@ -176,8 +172,7 @@ export default {
       meshDialogVisible: false,
       meshForm: {},
       meshFormRules: {
-        wholeMax: [{ validator: checkCurrentValue, trigger: 'blur' }],
-        safeMax: [{ validator: checkCurrentValue, trigger: 'blur' }]
+        wholeMax: [{ validator: checkCurrentValue, trigger: 'blur' }]
       }
     }
   },
