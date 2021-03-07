@@ -1,8 +1,8 @@
 # login
 
-## Installation
+#### Installation
 ```
-#### Project setup
+Project setup
 
 npm install
 ```
