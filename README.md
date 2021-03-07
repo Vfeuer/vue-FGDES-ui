@@ -1,7 +1,7 @@
 # login
 
 ### Guidelines for Installation
-###### Project setup
+##### Project setup
 ```
 npm install
 ```
