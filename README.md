@@ -1,5 +1,7 @@
 # UI for project AGCCS-CTRL22
 
+This programm aims to develop the userinterface for the Combined Charging System from project AGCCS. 
+
 ### Guidelines for Installation
 ##### Project setup
 ```
