@@ -7,7 +7,7 @@ The whole work is developed based on Vue.js and uses Element UI as the UI toolki
 ### Guidelines for Installation
 
 
-##### Enviroment Requirements
+##### Development environment
 nodejs v14.15.3 (compatibility of lower version hasn't been tested)
 
 ##### Project setup
