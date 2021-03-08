@@ -1,4 +1,4 @@
-# UI for project AGCCS-CTRL22
+## UI for project AGCCS-CTRL22
 
 This programm aims to develop the user interface for the Combined Charging System from project AGCCS. A supporting server program is needed for normal operation.
 
