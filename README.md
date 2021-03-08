@@ -1,6 +1,6 @@
 ## UI for project AGCCS-CTRL22
 
-This programm aims to develop the user interface for the Combined Charging System from project AGCCS. A supporting server program is needed for normal operation.
+This programm aims to develop the user interface for the Combined Charging System from project AGCCS. A supporting server program is needed for regular operation.
 
 The whole work is developed based on Vue.js and uses Element UI as the UI toolkit.
 
