@@ -21,6 +21,7 @@ npm run serve
 ##### Compiles and minifies for production
 ```
 npm run build
+Then copy the folder dist into the server folder.
 ```
 ##### Lints and fixes files
 ```
