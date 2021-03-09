@@ -23,3 +23,5 @@ pnpm-debug.log*
 *.sw?
 debug.log
 README.md
+README.md
+debug.log
